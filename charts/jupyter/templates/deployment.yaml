@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    release: {{ .Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      annotations:
+        nautilus.dellemc.com/pravega-environment: "{{ .Release.Namespace }}-pravega"
+      labels:
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: {{ .Release.Name }}
+        image: {{ .Values.jupyter.image }}
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8888
+          name: http
